@@ -23,44 +23,42 @@ logger = logging.getLogger(__name__)
         block-size: 4k
 """
 
+
 class BenchmarkValidationError(Exception):
     pass
 
 
 class BenchmarkWorker(object):
     """Worker for execution of a specific benchmark test"""
+
     chunk_size = datetime.timedelta(seconds=60)
 
-    def __init__(self, datasource, juju, test):
+    def __init__(self, datasource: str, juju, test: dict):
         self.datasource = datasource
         self.juju = juju
         self.test = test
         self.action_pool = []
 
-    def validate(self):
+    def validate(self) -> None:
         """Validate that deployment environment can execute the test"""
         model_name = None
-        app_name  = None
+        app_name = None
         try:
-            model_name, app_name = self.test['application'].split(":")
+            model_name, app_name = self.test["application"].split(":")
         except ValueError:
-            app_name = self.test['application']
+            app_name = self.test["application"]
 
         if model_name:
             try:
                 self.juju.switch_model(model_name)
             except:
-                raise BenchmarkValidationError(
-                    f"Unable to find model {model_name}"
-                )
+                raise BenchmarkValidationError(f"Unable to find model {model_name}")
         try:
             self.application = self.juju.get_application(app_name)
         except:
-            raise BenchmarkValidationError(
-                f"Unable to find application {app_name}"
-            )
+            raise BenchmarkValidationError(f"Unable to find application {app_name}")
 
-        clients = int(self.test['clients'])
+        clients = int(self.test["clients"])
         if len(self.application.units) < clients:
             raise BenchmarkValidationError(
                 f"Not enough units for {app_name} to execute test"
@@ -68,27 +66,23 @@ class BenchmarkWorker(object):
         # TODO
         # check action exists and has required parameters
 
-    def execute(self):
+    def execute(self) -> None:
         """Execute the benchmark"""
         self.start_time = parse_datetime("now")
         # run_action will queue the action
         # need to check status untill all have completed
         self.application.units
-        test_duration = int(self.test['test_duration'])
-        batch_size = int(self.test['batch_size'])
-        ramp_interval = int(self.test['ramp_interval'])
-        clients = int(self.test['clients'])
-        while (clients > 0):
+        test_duration = int(self.test["test_duration"])
+        batch_size = int(self.test["batch_size"])
+        ramp_interval = int(self.test["ramp_interval"])
+        clients = int(self.test["clients"])
+        while clients > 0:
             # Submit batch_size of clients and append to
             # the action pool
             units = self.application.units
-
-
-
-                self.action_pool.append(task)
+            self.action_pool.append(task)
             clients -= batch_size
             sleep(ramp_interval)
-
 
         self.end_time = parse_datetime("now")
         # TODO

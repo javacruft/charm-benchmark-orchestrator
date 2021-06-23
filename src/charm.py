@@ -6,7 +6,7 @@ import base64
 import logging
 import yaml
 
-from ops.charm import(
+from ops.charm import (
     RelationChangedEvent,
     RelationBrokenEvent,
 )
@@ -15,10 +15,7 @@ from ops.model import ActiveStatus
 
 from governor.base import GovernorBase
 
-from worker import (
-    BenchmarkWorker,
-    BenchmarkValidationError
-)
+from worker import BenchmarkWorker, BenchmarkValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -88,18 +85,18 @@ class BenchmarkOrchestratorCharm(GovernorBase):
         """Assess state of metric storage relation and configure datasource"""
         unit_data = event.relation.data[event.unit]
         datasource = {
-            "type": unit_data.get('type'),
-            "url": unit_data.get('type'),
-            "description": unit_data.get('description'),
+            "type": unit_data.get("type"),
+            "url": unit_data.get("type"),
+            "description": unit_data.get("description"),
         }
         credentials = {
-            "username": unit_data.get('username'),
-            "password": unit_data.get('password'),
+            "username": unit_data.get("username"),
+            "password": unit_data.get("password"),
         }
         if all(credentials.values()):
             datasource.update(credentials)
-        if unit_data.get('database'):
-            datasource['database'] = unit_data.get('database')
+        if unit_data.get("database"):
+            datasource["database"] = unit_data.get("database")
         if all(datasource.values()):
             self.state.datasource = datasource
         else:

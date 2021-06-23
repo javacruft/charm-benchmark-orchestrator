@@ -1,0 +1,4 @@
+ops >= 1.2.0
+juju==2.8.6
+prometheus-api-client
+git+https://github.com/canonical/governor.git

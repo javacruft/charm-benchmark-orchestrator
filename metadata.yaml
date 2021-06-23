@@ -1,0 +1,16 @@
+# Copyright 2021 Canonical Ltd
+# See LICENSE file for licensing details.
+name: benchmark-orchestrator
+description: |
+  Orchestration of benchmark testing for Juju workloads
+summary: |
+  TODO
+
+provides:
+  dashboards:
+    interface: grafana-dashboard
+  grafana-api:
+    interface: grafana-api
+requires:
+  metric-storage:
+    interface: grafana-source

@@ -1,0 +1,10 @@
+# Copyright 2021 Canonical Ltd
+# See LICENSE file for licensing details.
+
+benchmark:
+  description: Execute benchmark actions against configured applications
+  params:
+    configuration:
+      description: "Configuration file for benchmark operation - might be base64 encoded"
+      type: string
+      default: ""
